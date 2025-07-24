@@ -20,9 +20,9 @@ if st.button("제출"):
     answer = st.session_state.secret_number
 
     if user_input < answer:
-        st.warning("너무 작아요! 📉")
+        st.warning("down 📉")
     elif user_input > answer:
-        st.warning("너무 커요! 📈")
+        st.warning("up 📈")
     else:
         st.success(f"🎉 정답입니다! 숫자는 {answer}였습니다.")
         st.balloons()
