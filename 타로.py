@@ -1,6 +1,8 @@
 import streamlit as st
 
-# 카드 정보 (이름, 이미지, 해석)
+# -----------------------------
+# 카드 데이터 (10장)
+# -----------------------------
 tarot_cards = [
     {
         "name": "The Fool",
@@ -21,12 +23,48 @@ tarot_cards = [
         }
     },
     {
+        "name": "The High Priestess",
+        "image": "https://upload.wikimedia.org/wikipedia/en/8/88/RWS_Tarot_02_High_Priestess.jpg",
+        "meanings": {
+            "연애운": "당장의 말보다는 직관을 믿으세요.",
+            "금전운": "겉으로 드러나지 않은 정보가 중요합니다.",
+            "직업운": "지금은 조용히 준비하고 기다리는 시기입니다."
+        }
+    },
+    {
+        "name": "The Empress",
+        "image": "https://upload.wikimedia.org/wikipedia/en/d/d2/RWS_Tarot_03_Empress.jpg",
+        "meanings": {
+            "연애운": "풍요롭고 따뜻한 관계가 이어집니다.",
+            "금전운": "수확의 시기입니다. 풍요가 따릅니다.",
+            "직업운": "창조적 에너지가 충만한 시기입니다."
+        }
+    },
+    {
+        "name": "The Emperor",
+        "image": "https://upload.wikimedia.org/wikipedia/en/c/c3/RWS_Tarot_04_Emperor.jpg",
+        "meanings": {
+            "연애운": "책임감 있는 태도가 관계를 이끌 수 있어요.",
+            "금전운": "안정적인 수입과 체계적 계획이 중요합니다.",
+            "직업운": "지금은 리더십과 권위를 발휘해야 할 시기입니다."
+        }
+    },
+    {
         "name": "The Lovers",
         "image": "https://upload.wikimedia.org/wikipedia/en/d/db/RWS_Tarot_06_Lovers.jpg",
         "meanings": {
             "연애운": "중요한 선택의 시기입니다. 진심을 따르세요.",
             "금전운": "파트너와의 재정 조율이 필요해요.",
             "직업운": "협력과 파트너십이 중요해지는 시기입니다."
+        }
+    },
+    {
+        "name": "The Chariot",
+        "image": "https://upload.wikimedia.org/wikipedia/en/3/3a/The_Chariot.jpg",
+        "meanings": {
+            "연애운": "관계를 주도해 나가면 좋은 결과가 있을 수 있어요.",
+            "금전운": "목표를 향해 집중하면 성과가 따릅니다.",
+            "직업운": "전진하는 힘이 강합니다. 추진력을 믿으세요."
         }
     },
     {
@@ -51,16 +89,19 @@ tarot_cards = [
         "name": "The World",
         "image": "https://upload.wikimedia.org/wikipedia/en/f/ff/RWS_Tarot_21_World.jpg",
         "meanings": {
-            "연애운": "관계가 안정적으로 마무리되거나 완성됩니다.",
+            "연애운": "관계가 완성되거나 큰 성장을 이룹니다.",
             "금전운": "목표한 재정적 성공에 도달할 수 있어요.",
-            "직업운": "긴 여정의 마무리, 프로젝트 완수의 시기입니다."
+            "직업운": "프로젝트가 성공적으로 마무리됩니다."
         }
-    }
+    },
 ]
 
+# 카드 뒷면 이미지
 back_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Rider-Back.jpg/440px-Rider-Back.jpg"
 
-# 상태 초기화
+# -----------------------------
+# 세션 상태 초기화
+# -----------------------------
 if "selected_indices" not in st.session_state:
     st.session_state.selected_indices = []
 if "flipped" not in st.session_state:
@@ -68,50 +109,59 @@ if "flipped" not in st.session_state:
 if "fortune_type" not in st.session_state:
     st.session_state.fortune_type = "연애운"
 
-# 제목
-st.title("🔮 타로 카드 직접 뽑기")
-st.markdown("카드를 3장 선택해보세요. 클릭하면 카드가 열립니다!")
+# -----------------------------
+# UI 시작
+# -----------------------------
+st.title("🔮 직접 뽑는 3장 타로 리딩")
+st.markdown("아래에서 카드를 클릭해 3장을 선택하세요. 클릭하면 앞면이 드러납니다.")
 
-# 운세 선택
-st.session_state.fortune_type = st.selectbox("운세를 선택하세요", ["연애운", "금전운", "직업운"])
+# 운세 종류 선택
+st.session_state.fortune_type = st.selectbox("🔍 궁금한 운세를 선택하세요", ["연애운", "금전운", "직업운"])
 
-# 카드 UI (뒷면 → 클릭하면 앞면)
-cols = st.columns(3)
-
+# 카드 뽑기 UI
+cols = st.columns(5)
 for i in range(len(tarot_cards)):
-    col = cols[i % 3]
-
+    col = cols[i % 5]
     with col:
         if st.session_state.flipped[i]:
-            st.image(tarot_cards[i]["image"], width=180)
+            st.image(tarot_cards[i]["image"], use_column_width=True)
             st.caption(tarot_cards[i]["name"])
         else:
             if len(st.session_state.selected_indices) < 3:
-                if st.button(f"카드 {i+1}", key=f"card_btn_{i}"):
+                if st.button(f"카드 {i+1}", key=f"card_{i}"):
                     st.session_state.flipped[i] = True
                     st.session_state.selected_indices.append(i)
-            st.image(back_image, width=180)
+            st.image(back_image, use_column_width=True)
 
-# 결과 출력
+# -----------------------------
+# 리딩 결과 출력
+# -----------------------------
 if len(st.session_state.selected_indices) == 3:
-    st.subheader("🃏 타로 리딩 결과")
-    for idx in st.session_state.selected_indices:
+    st.subheader("🃏 선택한 카드 해석")
+    selected = st.session_state.selected_indices
+    for idx in selected:
         card = tarot_cards[idx]
         st.markdown(f"### {card['name']}")
         st.image(card["image"], width=200)
-        st.markdown(f"**해석:** *{card['meanings'][st.session_state.fortune_type]}*")
+        st.markdown(f"**의미:** *{card['meanings'][st.session_state.fortune_type]}*")
         st.markdown("---")
 
     # 종합 해석
     st.subheader("🔎 종합 해석")
-    meanings = [tarot_cards[i]["meanings"][st.session_state.fortune_type] for i in st.session_state.selected_indices]
-    summary = f"🧿 **{st.session_state.fortune_type} 총평**\n\n"
-    for i, meaning in enumerate(meanings, 1):
-        summary += f"- 카드 {i}: {meaning}\n"
-    summary += "\n💡 전체적으로, 변화와 기회가 혼재된 흐름입니다. 스스로를 믿고 움직인다면 좋은 방향으로 나아갈 수 있습니다."
-    st.markdown(summary)
+    all_meanings = [tarot_cards[i]["meanings"][st.session_state.fortune_type] for i in selected]
+    st.markdown(f"""
+    ### 🧿 {st.session_state.fortune_type} 요약
+    - 카드 1: {all_meanings[0]}
+    - 카드 2: {all_meanings[1]}
+    - 카드 3: {all_meanings[2]}
 
-# 초기화 버튼
+    💡 전반적으로 이 흐름은 **긍정적인 변화와 조화**, 또는 **주의가 필요한 전환기**를 의미할 수 있습니다.  
+    조언을 마음에 새기고 오늘 하루를 준비해보세요.
+    """)
+
+# -----------------------------
+# 리셋 버튼
+# -----------------------------
 if st.button("🔄 다시 뽑기"):
     st.session_state.selected_indices = []
     st.session_state.flipped = [False] * len(tarot_cards)
