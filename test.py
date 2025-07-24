@@ -1,3 +1,3 @@
 import streamlit as st
-st.title('나의 첫 streamlit app')
-st.write('hello streamlit!!!')
+st.title('0810')
+st.write('여름방학 특강')
