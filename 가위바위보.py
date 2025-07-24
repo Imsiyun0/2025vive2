@@ -14,7 +14,6 @@ if st.button("대결!"):
     computer_choice = random.choice(choices)
 
     # 결과 계산
-    result = ""
     if user_choice == computer_choice:
         result = "비겼어요! 😐"
     elif (
@@ -23,6 +22,7 @@ if st.button("대결!"):
         (user_choice == "보" and computer_choice == "바위")
     ):
         result = "이겼어요! 🎉"
+        st.balloons()  # 승리 시 폭죽 효과
     else:
         result = "졌어요... 😢"
 
